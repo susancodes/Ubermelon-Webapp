@@ -10,6 +10,10 @@ div.navbar-header img {
     margin-right: 7px;
 }
 
+/* Style for our Ubermelon watermelon cart icon */
+.melon-cart {
+    height: 15px;
+}
 
 /* all-melons listing */
 

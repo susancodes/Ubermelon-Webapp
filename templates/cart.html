@@ -13,7 +13,15 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
+            <tr>
+                {% for melon in melon_bought_list %}
+                <td>{{ melon.common_name }} </td>
+                <td>{{ melon.qty }}</td>
+                <td>{{ melon.price_str() }}</td>
+                <td>******MELON TOTAL</td>
+            </tr>
+            {% endfor %}
+<!--         <tr>
             <td>Ancient Watermelon</td>
             <td>5</td>
             <td>$3.00</td>
@@ -36,7 +44,7 @@
             <td>2</td>
             <td>$3.00</td>
             <td>$6.00</td>
-        </tr>
+        </tr> -->
         </tbody>
     </table>
 

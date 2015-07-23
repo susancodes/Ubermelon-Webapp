@@ -7,7 +7,8 @@ Authors: Joel Burton, Christian Fernandez, Meggie Mahnken.
 """
 
 
-from flask import Flask, render_template, redirect, flash
+from flask import Flask, render_template, redirect, flash, session, request
+
 import jinja2
 
 import model
@@ -63,7 +64,14 @@ def shopping_cart():
     # TODO: Display the contents of the shopping cart.
     #   - The cart is a list in session containing melons added
 
-    return render_template("cart.html")
+    list_of_melons_bought = session['cart']
+    melon_bought_list = []
+    for id in list_of_melons_bought:
+        melon = model.Melon.get_by_id(id)
+        melon_bought_list.append(melon)
+
+
+    return render_template("cart.html", melon_bought_list = melon_bought_list)
 
 
 @app.route("/add_to_cart/<int:id>")
@@ -77,7 +85,26 @@ def add_to_cart(id):
     # TODO: Finish shopping cart functionality
     #   - use session variables to hold cart list
 
-    return "Oops! This needs to be implemented!"
+    melon = model.Melon.get_by_id(id)
+    melon_id = melon.id
+    melon_name = melon.common_name
+
+    if 'cart' not in session:
+        session['cart'] = []
+    else:
+        melon_id not in session['cart']:
+        session['cart'].append(melon_id)
+
+    if 'qty' not in session:
+        session['qty'] = {}
+    else:
+        
+
+    
+
+    flash("Your melon has been Successfully added to cart.")
+
+    return redirect('/cart')
 
 
 @app.route("/login", methods=["GET"])
@@ -87,7 +114,7 @@ def show_login():
     return render_template("login.html")
 
 
-@app.route("/login", methods=["POST"])
+@app.route("/login_confirm", methods=["POST"])
 def process_login():
     """Log user into site.
 
@@ -97,8 +124,13 @@ def process_login():
 
     # TODO: Need to implement this!
 
-    return "Oops! This needs to be implemented"
+    username = request.form.get('email')
+    password = request.form.get('password')
 
+    if username:
+        session['username'] = username
+
+    return "Your email is %s" % (session['username'])
 
 @app.route("/checkout")
 def checkout():
