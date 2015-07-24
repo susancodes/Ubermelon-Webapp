@@ -14,11 +14,11 @@
         </thead>
         <tbody>
             <tr>
-                {% for melon in melon_bought_list %}
+                {% for melon, qty in melon_bought_list %}
                 <td>{{ melon.common_name }} </td>
-                <td>{{ melon.qty }}</td>
+                <td>{{ qty }}</td>
                 <td>{{ melon.price_str() }}</td>
-                <td>******MELON TOTAL</td>
+                <td>${{ '%0.2f' % (melon.price * qty) }}</td>
             </tr>
             {% endfor %}
 <!--         <tr>
@@ -48,7 +48,7 @@
         </tbody>
     </table>
 
-    <h3>Total: $27.00</h3>
+    <h3>Total: ${{ total }}</h3>
 
     <a href="/checkout" class="btn btn-large btn-primary">Check Out</a>
 

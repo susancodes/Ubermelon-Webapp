@@ -9,6 +9,8 @@ Authors: Joel Burton, Christian Fernandez, Meggie Mahnken.
 
 from flask import Flask, render_template, redirect, flash, session, request
 
+from collections import Counter
+
 import jinja2
 
 import model
@@ -52,7 +54,6 @@ def show_melon(id):
     """
 
     melon = model.Melon.get_by_id(id)
-    print melon
     return render_template("melon_details.html",
                            display_melon=melon)
 
@@ -64,14 +65,24 @@ def shopping_cart():
     # TODO: Display the contents of the shopping cart.
     #   - The cart is a list in session containing melons added
 
-    list_of_melons_bought = session['cart']
+    list_of_melons_in_cart = session['cart']
+    melonid_qty_dict = Counter(list_of_melons_in_cart)
     melon_bought_list = []
-    for id in list_of_melons_bought:
+    total_list = []
+
+    for id, qty in melonid_qty_dict.items():
         melon = model.Melon.get_by_id(id)
-        melon_bought_list.append(melon)
+        melon_price = melon.price
+        total_list.append(melon_price * qty)
+        melon_bought_list.append((melon, qty))
+    
+    total = '%.2f' % sum(total_list)
+        
+    # for id in list_of_melons_bought:
+    #     melon = model.Melon.get_by_id(id)
+    #     melon_bought_list.append(melon)
 
-
-    return render_template("cart.html", melon_bought_list = melon_bought_list)
+    return render_template("cart.html", melon_bought_list = melon_bought_list, total=total)
 
 
 @app.route("/add_to_cart/<int:id>")
@@ -91,18 +102,12 @@ def add_to_cart(id):
 
     if 'cart' not in session:
         session['cart'] = []
-    else:
-        melon_id not in session['cart']:
         session['cart'].append(melon_id)
-
-    if 'qty' not in session:
-        session['qty'] = {}
     else:
-        
-
+        session['cart'].append(melon_id)
     
 
-    flash("Your melon has been Successfully added to cart.")
+    flash("%s has been Successfully added to cart." % melon_name)
 
     return redirect('/cart')
 
